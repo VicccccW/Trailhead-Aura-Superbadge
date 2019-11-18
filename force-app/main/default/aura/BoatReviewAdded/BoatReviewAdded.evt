@@ -1,0 +1,1 @@
+<aura:event type="COMPONENT" description="another unnecessary event, we could reuse pretty much all of them" />

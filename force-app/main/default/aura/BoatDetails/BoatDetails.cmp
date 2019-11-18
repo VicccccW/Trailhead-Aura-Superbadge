@@ -1,0 +1,46 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+
+    <!-- ATTS -->
+    <aura:attribute name="boat" type="Boat__c" /> 
+    <aura:attribute name="id" type="Id"/>  
+    <aura:attribute name="selectedTabId" type="String" default="details" />
+    <aura:attribute name="recordError" type="String"/>
+    <!-- EVENTS & HANDLERS -->
+    <aura:handler event="c:BoatSelected" action="{!c.onBoatSelected}"/>
+    <aura:handler name="BoatReviewAdded" event="c:BoatReviewAdded" action="{!c.onBoatReviewAdded}"/>
+
+    <!-- LDS -->
+    <force:recordData aura:id="service"
+                      recordId="{!v.id}"
+                      layoutType="FULL"
+                      mode="EDIT"                      
+                      fields= "Id, Name, Description__c, Price__c, Length__c, Contact__r.Name, Contact__r.Email, Contact__r.HomePhone, BoatType__r.Name, Picture__c"                                
+                      targetFields="{!v.boat}"
+                      targetError="{!v.recordError}"
+                      recordUpdated="{!c.onRecordUpdated}" />
+
+    <!-- LAYOUT -->
+    <aura:if isTrue="{!not(empty(v.id))}">
+        <div class="slds-card">
+            <lightning:tabset variant="scoped" selectedTabId="{!v.selectedTabId}" aura:id="detailTabset">
+                <lightning:tab onactive="{!c.handleTabSelect}" id="details" tabindex="1"  title="Details" label="Details" >                    
+                    <c:BoatDetail boat="{!v.boat}" aura:id="boatDetail"/>                    
+                </lightning:tab>
+                <lightning:tab onactive="{!c.handleTabSelect}" id="boatreviewtab" tabindex="2" title="Reviews" label="Reviews" >
+                    <c:BoatReviews boat="{!v.boat}" aura:id="boatReviews"/>
+                </lightning:tab>
+                <lightning:tab onactive="{!c.handleTabSelect}" id="addReview" tabindex="3" title="Add Review" label="Add Review" >
+                    <c:AddBoatReview boat="{!v.boat}" aura:id="addBoatReview" id="{!v.Id}" /> 
+                </lightning:tab>
+            </lightning:tabset>          
+        </div>  
+    </aura:if> 
+    <aura:if isTrue="{!not(empty(v.recordError))}">
+        <div class="recordError">
+            <ui:message title="Error" severity="error" closable="true">
+                {!v.recordError}
+            </ui:message>
+        </div>
+    </aura:if>
+    
+</aura:component>
